@@ -1,5 +1,6 @@
+import os
 from tensorflow.keras.utils import to_categorical
-from scipy.misc import imsave
+from scipy.misc import imsave, toimage
 import numpy as np
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
@@ -221,13 +222,54 @@ def judge(weights_list):
     return new_w
 
 
-def save(path, x_attack_train, y_attack_train):
-    x_attack_train = np.array(x_attack_train)
-    y_attack_train = np.array(y_attack_train)
-    print(x_attack_train.shape, y_attack_train.shape)
-    for j, item in enumerate(x_attack_train):
-        imsave(path + f"/{j}.jpg", item)
+# def save(path, x_attack_train, y_attack_train):
+#     x_attack_train = np.array(x_attack_train)
+#     y_attack_train = np.array(y_attack_train)
+#     print(x_attack_train.shape, y_attack_train.shape)
+#     for j, item in enumerate(x_attack_train):
+#         imsave(path + f"/{j}.jpg", item)
 
+# def save(path, x_attack_train, y_attack_train):
+#     x_attack_train = np.array(x_attack_train)
+#     y_attack_train = np.array(y_attack_train)
+#     print(x_attack_train.shape, y_attack_train.shape)
+#     for j, item in enumerate(x_attack_train):
+#         imsave(path + f"/{j}.jpg", item)
+
+def save(path, x_a, y_a):
+    for i, (x, y) in enumerate(zip(x_a, y_a)):
+        im = toimage(x)
+        j = np.argmax(y)
+        
+        # Create the directory if it does not exist
+        directory = os.path.dirname(path + f"/{j}/")
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        
+        item = path + f"/{j}/{i}.jpg"
+        imsave(item, im)
+
+
+
+# def save(path, x_attack_train, y_attack_train):
+#     x_attack_train = np.array(x_attack_train)
+#     y_attack_train = np.array(y_attack_train)
+#     print(x_attack_train.shape, y_attack_train.shape)
+#     for j, item in enumerate(x_attack_train):
+#         imsave(f"{path}/{j}.jpg", item)
+
+
+# def save_data(data_path, temp_b, temp_n, n):
+#     x_a_n = []
+#     y_a_n = []
+#     for item_a, item_n in zip(temp_b, temp_n):
+#         a_temp = np.array(item_a)
+#         n_temp = np.array(item_n)
+#         temp = a_temp - n_temp
+#         x_a_n.append(temp)
+#         y_a_n.append(n)
+#     save_path = f"./result/test_data/" + data_path + f"/{n}"
+#     save(save_path, x_a_n, y_a_n)
 
 def save_data(data_path, temp_b, temp_n, n):
     x_a_n = []

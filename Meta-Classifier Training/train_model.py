@@ -1,10 +1,12 @@
+import os
 from tensorflow.keras.utils import to_categorical
-from scipy.misc import imsave
+from scipy.misc import imsave, toimage
 import numpy as np
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 import time
 import load_dataset
+
 
 
 def create_model():
@@ -181,12 +183,30 @@ def get_input(weights):
     return Sum, grad_list
 
 
-def save(path, x_attack_train, y_attack_train):
-    x_attack_train = np.array(x_attack_train)
-    y_attack_train = np.array(y_attack_train)
-    print(x_attack_train.shape, y_attack_train.shape)
-    for j, item in enumerate(x_attack_train):
-        imsave(path + f"/{j}.jpg", item)
+# def save(path, x_attack_train, y_attack_train):
+#     x_attack_train = np.array(x_attack_train)
+#     y_attack_train = np.array(y_attack_train)
+#     print(x_attack_train.shape, y_attack_train.shape)
+#     for j, item in enumerate(x_attack_train):
+#         imsave(path + f"/{j}.jpg", item)
+
+
+#Replacement 
+def save(path, x_a, y_a):
+    for i, (x, y) in enumerate(zip(x_a, y_a)):
+        im = toimage(x)
+        j = np.argmax(y)
+        
+        # Create the directory if it does not exist
+        directory = os.path.dirname(path + f"/{j}/")
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        
+        item = path + f"/{j}/{i}.jpg"
+        imsave(item, im)
+
+
+
 
 
 def save_data(data_path, temp_b, temp_n, n):
